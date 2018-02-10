@@ -50,21 +50,16 @@ public class PictureListActivity extends AppCompatActivity {
     private boolean mTwoPane;
     private Uri outputFileUri;
 
-    // needed for gallery
-    private final String image_titles[] = {
-            "Img1",
-    };
-    private final Integer image_ids[] = {
-            R.drawable.img1,
-    };
+    // gallery url list
     private ArrayList<CreateList> prepareData(){
 
         ArrayList<CreateList> theimage = new ArrayList<>();
-        for(int i = 0; i< image_titles.length; i++){
+        File f = new File(String.valueOf(ROOT_FOLDER));
+        File file[] = f.listFiles();
+        for (int i=0; i < file.length; i++)
+        {
             CreateList createList = new CreateList();
-            createList.setImage_title(image_titles[i]);
-            createList.setImage_ID(image_ids[i]);
-            theimage.add(createList);
+            createList.setImage_ID(file[i].getName());
         }
         return theimage;
     }
@@ -78,7 +73,7 @@ public class PictureListActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
         recyclerView.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),3);
         recyclerView.setLayoutManager(layoutManager);
         ArrayList<CreateList> createLists = prepareData();
         MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
