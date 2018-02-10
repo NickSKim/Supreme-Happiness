@@ -1,7 +1,6 @@
 package edu.wwu.cs.ctrlf;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -15,14 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-
-import edu.wwu.cs.ctrlf.dummy.DummyContent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +31,7 @@ import java.util.List;
  */
 public class PictureListActivity extends AppCompatActivity {
 
-    public static final File ROOT_FOLDER = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator);
+    public static File rootFolder;
     /**
      * Random constant.
      */
@@ -74,6 +67,7 @@ public class PictureListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //start of our code
         setContentView(R.layout.activity_picture_list);
+        rootFolder = new File(getFilesDir() + File.separator + "Pictures" + File.separator);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
         recyclerView.setHasFixedSize(true);
@@ -114,8 +108,8 @@ public class PictureListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                ROOT_FOLDER.mkdirs();
-                File outputFile = new File(ROOT_FOLDER, "IMG_" + System.currentTimeMillis() + ".jpg");
+                rootFolder.mkdirs();
+                File outputFile = new File(rootFolder, "IMG_" + System.currentTimeMillis() + ".jpg");
                 outputFileUri = Uri.fromFile(outputFile);
 
                 List<Intent> takeNewImageIntents = new ArrayList<>();
