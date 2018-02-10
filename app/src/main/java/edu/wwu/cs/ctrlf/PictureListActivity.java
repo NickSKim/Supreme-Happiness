@@ -1,8 +1,14 @@
 package edu.wwu.cs.ctrlf;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +24,7 @@ import android.widget.TextView;
 
 import edu.wwu.cs.ctrlf.dummy.DummyContent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +39,15 @@ import java.util.List;
 public class PictureListActivity extends AppCompatActivity {
 
     /**
+     * Random constant.
+     */
+    private static final int REQUEST_PICTURE = 37;
+    /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+    private Uri outputFileUri;
 
     // needed for gallery
     private final String image_titles[] = {
@@ -76,13 +88,7 @@ public class PictureListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(takePhotoOnClick());
 
         if (findViewById(R.id.picture_detail_container) != null) {
             // The detail container view will be present only in the
@@ -100,7 +106,72 @@ public class PictureListActivity extends AppCompatActivity {
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
     }
+*/
+    @NonNull
+    private View.OnClickListener takePhotoOnClick() {
+        return new View.OnClickListener() {
 
+            @Override
+            public void onClick(View view) {
+                File root = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator);
+                root.mkdirs();
+                File outputFile = new File(root, "IMG_" + System.currentTimeMillis() + ".jpg");
+                outputFileUri = Uri.fromFile(outputFile);
+
+                List<Intent> takeNewImageIntents = new ArrayList<>();
+                Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+                for (ResolveInfo res : getPackageManager().queryIntentActivities(captureIntent, 0)) {
+                    String packageName = res.activityInfo.packageName;
+                    Intent intent = new Intent(captureIntent);
+                    intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+                    intent.setPackage(packageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                    takeNewImageIntents.add(intent);
+                }
+
+                Intent pickExistingImageIntent = new Intent();
+                pickExistingImageIntent.setType("image/*");
+                pickExistingImageIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+                Intent chooser = Intent.createChooser(pickExistingImageIntent, "Select Source");
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, takeNewImageIntents.toArray(new Parcelable[0]));
+                startActivityForResult(chooser, REQUEST_PICTURE);
+            }
+        };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICTURE && resultCode == RESULT_OK) {
+
+            Uri realUri;
+
+            if (data == null || data.getAction() == null) {
+                realUri = outputFileUri;
+            } else {
+                realUri = data.getData();
+            }
+
+            // TODO do stuff
+
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("outputFileUri", outputFileUri.toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        outputFileUri = Uri.parse(savedInstanceState.getString("outputFileUri"));
+    }
+
+/*
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
