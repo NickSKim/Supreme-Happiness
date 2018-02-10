@@ -146,15 +146,11 @@ public class PictureListActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PICTURE && resultCode == RESULT_OK) {
 
-            Uri realUri;
+            Uri realUri = data.getData();
 
-            if (data == null || data.getAction() == null) {
-                realUri = outputFileUri;
-            } else {
-                realUri = data.getData();
-            }
-
-            // TODO do stuff
+            Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
+            showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, realUri);
+            startActivity(showPictureIntent);
 
         }
     }

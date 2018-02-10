@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">CTRL+F</string>
     <string name="title_picture_detail">Picture Detail</string>
+    <string name="title_activity_show_picture">ShowPictureActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
