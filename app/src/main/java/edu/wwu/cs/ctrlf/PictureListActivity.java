@@ -52,14 +52,16 @@ public class PictureListActivity extends AppCompatActivity {
 
     // gallery url list
     private ArrayList<CreateList> prepareData(){
-
         ArrayList<CreateList> theimage = new ArrayList<>();
-        File f = new File(String.valueOf(ROOT_FOLDER));
-        File file[] = f.listFiles();
+        File file[] = ROOT_FOLDER.listFiles();
+        if (file==null) {
+            return theimage;
+        }
         for (int i=0; i < file.length; i++)
         {
             CreateList createList = new CreateList();
             createList.setImage_ID(file[i].getName());
+            theimage.add(createList);
         }
         return theimage;
     }
@@ -70,6 +72,8 @@ public class PictureListActivity extends AppCompatActivity {
         //start of our code
         setContentView(R.layout.activity_picture_list);
 
+        ROOT_FOLDER.mkdirs();
+        ROOT_FOLDER.mkdir();
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
         recyclerView.setHasFixedSize(true);
 
@@ -109,7 +113,6 @@ public class PictureListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                ROOT_FOLDER.mkdirs();
                 File outputFile = new File(ROOT_FOLDER, "IMG_" + System.currentTimeMillis() + ".jpg");
                 outputFileUri = Uri.fromFile(outputFile);
 
@@ -150,6 +153,7 @@ public class PictureListActivity extends AppCompatActivity {
             }
 
             // TODO do stuff
+            prepareData();
 
         }
     }
