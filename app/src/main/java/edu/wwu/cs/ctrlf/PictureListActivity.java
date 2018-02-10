@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import edu.wwu.cs.ctrlf.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,10 +37,39 @@ public class PictureListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+    // needed for gallery
+    private final String image_titles[] = {
+            "Img1",
+    };
+    private final Integer image_ids[] = {
+            R.drawable.img1,
+    };
+    private ArrayList<CreateList> prepareData(){
+
+        ArrayList<CreateList> theimage = new ArrayList<>();
+        for(int i = 0; i< image_titles.length; i++){
+            CreateList createList = new CreateList();
+            createList.setImage_title(image_titles[i]);
+            createList.setImage_ID(image_ids[i]);
+            theimage.add(createList);
+        }
+        return theimage;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //start of our code
         setContentView(R.layout.activity_picture_list);
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
+        recyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
+        recyclerView.setLayoutManager(layoutManager);
+        ArrayList<CreateList> createLists = prepareData();
+        MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
+        recyclerView.setAdapter(adapter); //end
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,11 +92,11 @@ public class PictureListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.picture_list);
+        /*View recyclerView = findViewById(R.id.picture_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView((RecyclerView) recyclerView);*/
     }
-
+/*
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
     }
@@ -137,5 +168,5 @@ public class PictureListActivity extends AppCompatActivity {
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
         }
-    }
+    }*/
 }
