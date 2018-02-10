@@ -38,6 +38,7 @@ import java.util.List;
  */
 public class PictureListActivity extends AppCompatActivity {
 
+    public static final File ROOT_FOLDER = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator);
     /**
      * Random constant.
      */
@@ -113,9 +114,8 @@ public class PictureListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                File root = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator);
-                root.mkdirs();
-                File outputFile = new File(root, "IMG_" + System.currentTimeMillis() + ".jpg");
+                ROOT_FOLDER.mkdirs();
+                File outputFile = new File(ROOT_FOLDER, "IMG_" + System.currentTimeMillis() + ".jpg");
                 outputFileUri = Uri.fromFile(outputFile);
 
                 List<Intent> takeNewImageIntents = new ArrayList<>();
