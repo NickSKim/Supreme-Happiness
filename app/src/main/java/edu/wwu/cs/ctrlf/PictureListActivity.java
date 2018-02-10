@@ -46,7 +46,7 @@ public class PictureListActivity extends AppCompatActivity {
     // gallery url list
     private ArrayList<CreateList> prepareData(){
         ArrayList<CreateList> theimage = new ArrayList<>();
-        File file[] = ROOT_FOLDER.listFiles();
+        File file[] = rootFolder.listFiles();
         if (file==null) {
             return theimage;
         }
