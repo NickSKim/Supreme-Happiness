@@ -48,5 +48,6 @@
         android:scrollIndicators="top|bottom"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:textIsSelectable="true" />
 </LinearLayout>

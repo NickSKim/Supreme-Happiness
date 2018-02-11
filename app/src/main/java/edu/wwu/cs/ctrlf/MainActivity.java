@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.SparseArray;
 import android.view.SurfaceView;
 import android.view.View;
@@ -59,15 +60,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 //              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
-                callSearch(newText);
+                if (newText.length() > 3) {
+                    callSearch(newText);
+                }
 //              }
                 return true;
             }
 
             public void callSearch(String query) {
-                //Do searching
-                System.out.println("this was called");
 
+                TextView view = findViewById(R.id.where_text_goes);
+                String content = view.getText().toString()
+                        .replaceAll("(?i)(?:<font.*?>|</font>)", "")
+                        .replaceAll("(?i)" + query, "<font color=red>" + query + "</font>");
+                view.setText(Html.fromHtml(content));
             }
 
         });
