@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         cameraSource = new CameraSource.Builder(getApplicationContext(), recognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1280, 1024)
-                .setRequestedFps(15.0f)
+                .setRequestedFps(1.0f)
                 .setAutoFocusEnabled(true)
                 .build();
 
@@ -89,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < blocks.size(); i++) {
                 TextBlock block = blocks.valueAt(i);
                 for (Text component : block.getComponents()) {
-                    text.getEditableText().append(component.getValue());
-                    text.getEditableText().append('\n');
+                    Log.i("Text", component.getValue());
+                    text.append(component.getValue());
+                    text.append("\n");
                 }
             }
 
