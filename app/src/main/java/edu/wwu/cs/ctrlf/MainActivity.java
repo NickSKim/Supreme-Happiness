@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < blocks.size(); i++) {
                     TextBlock block = blocks.valueAt(i);
                     for (Text component : block.getComponents()) {
-
                         runOnUiThread(new Appender(text, component));
                     }
                 }
@@ -157,8 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                text.append(component.getValue());
-                text.append("\n");
+                String s = component.getValue();
+                CharSequence query = ((SearchView) findViewById(R.id.search_bar)).getQuery();
+                if (s.contains(query)) {
+
+                }
+                text.append(Html.fromHtml(Html.escapeHtml(s)
+                        .replaceAll("(?i)(" + query + ")", "<font color=red>\1</font>") + "<br>"));
             }
         }
     }
