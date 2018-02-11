@@ -16,9 +16,9 @@
         android:theme="@style/AppTheme" />
 
     <RelativeLayout
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_height="364dp"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary">
 
         <SurfaceView
             android:id="@+id/camera_area"
