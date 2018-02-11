@@ -141,16 +141,17 @@ public class PictureListActivity extends AppCompatActivity {
 
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
+            } else {
+                Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
+                showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, outputFileUri);
+
+                prepareData();
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), theimage);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.picture_list);
+                recyclerView.setAdapter(adapter);
+
+                startActivity(showPictureIntent);
             }
-            Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
-            showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, outputFileUri);
-
-            prepareData();
-            MyAdapter adapter = new MyAdapter(getApplicationContext(), theimage);
-            RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
-            recyclerView.setAdapter(adapter);
-
-            startActivity(showPictureIntent);
         }
     }
 
