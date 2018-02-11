@@ -2,18 +2,22 @@ package edu.wwu.cs.ctrlf;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.SparseArray;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -48,6 +52,30 @@ public class MainActivity extends AppCompatActivity {
                     ((FloatingActionButton) view).setImageDrawable(Resources.getSystem()
                             .getDrawable(android.R.drawable.ic_media_play, getTheme()));
                 }
+            }
+        });
+
+        // help button
+        FloatingActionButton helpButton = findViewById(R.id.help_Button);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(MainActivity.this);
+                //setting custom layout to dialog
+                dialog.setContentView(R.layout.help_dialog_layout);
+                dialog.setTitle("Custom Dialog");
+                //adding text dynamically
+                TextView txt = (TextView) dialog.findViewById(R.id.textView);
+                txt.setText(R.string.dialog_message);
+                //adding button click event
+                Button dismissButton = (Button) dialog.findViewById(R.id.button);
+                dismissButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
 
