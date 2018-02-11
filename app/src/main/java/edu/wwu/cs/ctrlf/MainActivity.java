@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.SparseArray;
 import android.view.SurfaceView;
@@ -191,13 +192,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 String s = component.getValue();
                 CharSequence query = ((SearchView) findViewById(R.id.search_bar)).getQuery();
-                if (s.contains(query)) {
-
-                }
-                if (!text.getText().toString().toLowerCase().replaceAll("[^a-zA-Z0-9 -]", "")
-                        .contains(s.toLowerCase().replaceAll("[^a-zA-Z0-9 -]", ""))) {
-                    text.append(Html.fromHtml(Html.escapeHtml(s)
-                            .replaceAll("(?i)(" + query + ")", "<font color=red>" + query + "</font>") + "<br>"));
+                if (!TextUtils.isEmpty(query) && s.contains(query)) {
+                    if (!text.getText().toString().toLowerCase().replaceAll("[^a-zA-Z0-9 -]", "")
+                            .contains(s.toLowerCase().replaceAll("[^a-zA-Z0-9 -]", ""))) {
+                        text.append(Html.fromHtml(Html.escapeHtml(s)
+                                .replaceAll("(?i)(" + query + ")", "<font color=red>" + query + "</font>") + "<br>"));
+                    }
                 }
             }
         }
