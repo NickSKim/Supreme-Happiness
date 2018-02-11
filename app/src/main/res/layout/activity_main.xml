@@ -39,14 +39,17 @@
             android:focusedByDefault="true"
             app:srcCompat="@android:drawable/ic_media_play" />
     </RelativeLayout>
-
     <TextView
         android:id="@+id/where_text_goes"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="fill_parent"
         android:background="@color/colorPrimaryDark"
         android:scrollIndicators="top|bottom"
         android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarSize="?android:attr/scrollbarSize"
+        android:scrollbarTrackVertical="@color/colorAccent"
         android:scrollbars="vertical"
-        android:textColor="@color/colorPrimary" />
+        android:maxLines="250"
+        android:textColor="@color/colorPrimary"
+        tools:scrollbarStyle="insideInset" />
 </LinearLayout>

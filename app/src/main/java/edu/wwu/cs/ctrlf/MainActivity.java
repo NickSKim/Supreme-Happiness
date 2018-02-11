@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.SparseArray;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // start/stop button
         FloatingActionButton startStopButton = findViewById(R.id.start_stop_button);
         startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // search
         SearchView searchView = (SearchView) findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        // text recognition and camera setup
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         recognizer.setProcessor(new Processor());
 
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // permissions handling
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -108,16 +114,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // text detection and display
     private class Processor implements Detector.Processor<TextBlock> {
         @Override
         public void release() {
 
         }
 
+        // detect
         @Override
         public void receiveDetections(Detector.Detections<TextBlock> detections) {
             if (running) {
                 TextView text = findViewById(R.id.where_text_goes);
+                // scrollbar(s)
+                text.setMovementMethod(new ScrollingMovementMethod());
 
                 SparseArray<TextBlock> blocks = detections.getDetectedItems();
                 for (int i = 0; i < blocks.size(); i++) {
@@ -130,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        // display
         private class Appender implements Runnable {
             private final TextView text;
             private final Text component;
