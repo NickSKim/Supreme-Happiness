@@ -1,0 +1,99 @@
+package edu.wwu.cs.ctrlf;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.text.Text;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
+
+import java.io.IOException;
+
+import static android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
+
+public class MainActivity extends AppCompatActivity {
+
+    private CameraSource cameraSource;
+    private SurfaceView cameraArea;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+        recognizer.setProcessor(new Processor());
+
+        cameraSource = new CameraSource.Builder(getApplicationContext(), recognizer)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setRequestedPreviewSize(1280, 1024)
+                .setRequestedFps(15.0f)
+                .setAutoFocusEnabled(true)
+                .build();
+
+        cameraArea = findViewById(R.id.camera_area);
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 123);
+                return;
+            }
+            cameraSource.start(cameraArea.getHolder());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 123) {
+            try {
+                cameraSource.start(cameraArea.getHolder());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class Processor implements Detector.Processor<TextBlock> {
+        @Override
+        public void release() {
+
+        }
+
+        @Override
+        public void receiveDetections(Detector.Detections<TextBlock> detections) {
+            TextView text = findViewById(R.id.where_text_goes);
+
+            text.getEditableText();
+
+            SparseArray<TextBlock> blocks = detections.getDetectedItems();
+            for (int i = 0; i < blocks.size(); i++) {
+                TextBlock block = blocks.valueAt(i);
+                for (Text component : block.getComponents()) {
+                    text.getEditableText().append(component.getValue());
+                    text.getEditableText().append('\n');
+                }
+            }
+
+        }
+    }
+}
