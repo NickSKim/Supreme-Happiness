@@ -37,6 +37,7 @@
             android:focusable="auto"
             android:focusableInTouchMode="true"
             android:focusedByDefault="true"
+            android:tint="@color/colorPrimaryDark"
             app:srcCompat="@android:drawable/ic_media_play" />
     </RelativeLayout>
     <TextView
