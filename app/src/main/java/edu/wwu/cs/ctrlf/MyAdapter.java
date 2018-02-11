@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 //import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 /**
@@ -35,7 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(MyAdapter.ViewHolder viewHolder, int i) {
         //viewHolder.title.setText(galleryList.get(i).getImage_title());
-        viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        //viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Picasso.with(context).load(galleryList.get(i).getImage_ID()).resize(240, 120).into(viewHolder.img);
         viewHolder.img.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

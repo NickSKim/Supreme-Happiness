@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -15,8 +14,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,22 +39,6 @@ public class PictureListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private Uri outputFileUri;
-
-    // gallery url list
-    private ArrayList<CreateList> prepareData(){
-        ArrayList<CreateList> theimage = new ArrayList<>();
-        File file[] = rootFolder.listFiles();
-        if (file==null) {
-            return theimage;
-        }
-        for (int i=0; i < file.length; i++)
-        {
-            CreateList createList = new CreateList();
-            createList.setImage_ID(file[i].getName());
-            theimage.add(createList);
-        }
-        return theimage;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,16 +70,24 @@ public class PictureListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+    }
 
-        /*View recyclerView = findViewById(R.id.picture_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);*/
+    // gallery url list
+    private ArrayList<CreateList> prepareData(){
+        ArrayList<CreateList> theimage = new ArrayList<>();
+        File file[] = rootFolder.listFiles();
+        if (file==null) {
+            return theimage;
+        }
+        for (int i=0; i < file.length; i++)
+        {
+            CreateList createList = new CreateList();
+            createList.setImage_ID("file:///~" + file[i].toString());
+            theimage.add(createList);
+        }
+        return theimage;
     }
-/*
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
-    }
-*/
+
     @NonNull
     private View.OnClickListener takePhotoOnClick() {
         return new View.OnClickListener() {
@@ -141,9 +130,13 @@ public class PictureListActivity extends AppCompatActivity {
 
             Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
             showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, realUri);
-            startActivity(showPictureIntent);
-            prepareData();
 
+            ArrayList<CreateList> createLists = prepareData();
+            MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
+            RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
+            recyclerView.setAdapter(adapter);
+
+            startActivity(showPictureIntent);
         }
     }
 
@@ -158,74 +151,4 @@ public class PictureListActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         outputFileUri = Uri.parse(savedInstanceState.getString("outputFileUri"));
     }
-
-/*
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final PictureListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
-        private final boolean mTwoPane;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(PictureDetailFragment.ARG_ITEM_ID, item.id);
-                    PictureDetailFragment fragment = new PictureDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.picture_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, PictureDetailActivity.class);
-                    intent.putExtra(PictureDetailFragment.ARG_ITEM_ID, item.id);
-
-                    context.startActivity(intent);
-                }
-            }
-        };
-
-        SimpleItemRecyclerViewAdapter(PictureListActivity parent,
-                                      List<DummyContent.DummyItem> items,
-                                      boolean twoPane) {
-            mValues = items;
-            mParentActivity = parent;
-            mTwoPane = twoPane;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.picture_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
-
-            ViewHolder(View view) {
-                super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
-        }
-    }*/
 }
