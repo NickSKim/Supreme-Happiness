@@ -3,18 +3,13 @@ package edu.wwu.cs.ctrlf;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -24,8 +19,6 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
-
-import static android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
 
 public class MainActivity extends AppCompatActivity {
 

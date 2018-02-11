@@ -9,16 +9,25 @@
 
     <SearchView
         android:id="@+id/search_bar"
+        style="@style/AppTheme"
         android:layout_width="match_parent"
-        android:layout_height="48dp" />
+        android:layout_height="48dp"
+        android:background="@color/colorPrimaryDark"
+        android:theme="@style/AppTheme" />
 
     <SurfaceView
         android:id="@+id/camera_area"
         android:layout_width="match_parent"
-        android:layout_height="364dp" />
+        android:layout_height="364dp"
+        android:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/where_text_goes"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        android:background="@color/colorPrimaryDark"
+        android:scrollIndicators="top|bottom"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:textColor="@color/colorPrimary" />
 </LinearLayout>
