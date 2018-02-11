@@ -194,8 +194,11 @@ public class MainActivity extends AppCompatActivity {
                 if (s.contains(query)) {
 
                 }
-                text.append(Html.fromHtml(Html.escapeHtml(s)
-                        .replaceAll("(?i)(" + query + ")", "<font color=red>\1</font>") + "<br>"));
+                if (!text.getText().toString().toLowerCase().replaceAll("[^a-zA-Z0-9 -]", "")
+                        .contains(s.toLowerCase().replaceAll("[^a-zA-Z0-9 -]", ""))) {
+                    text.append(Html.fromHtml(Html.escapeHtml(s)
+                            .replaceAll("(?i)(" + query + ")", "<font color=red>" + query + "</font>") + "<br>"));
+                }
             }
         }
     }
