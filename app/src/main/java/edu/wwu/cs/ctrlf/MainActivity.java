@@ -2,16 +2,14 @@ package edu.wwu.cs.ctrlf;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
@@ -20,7 +18,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
