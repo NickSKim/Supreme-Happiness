@@ -12,10 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="48dp" />
 
-    <SurfaceView
-        android:id="@+id/camera_area"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="364dp" />
+        android:layout_height="wrap_content">
+
+        <SurfaceView
+            android:id="@+id/camera_area"
+            android:layout_width="match_parent"
+            android:layout_height="364dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/start_stop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/camera_area"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="auto"
+            android:focusableInTouchMode="true"
+            android:focusedByDefault="true"
+            app:srcCompat="@android:drawable/ic_media_play" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/where_text_goes"

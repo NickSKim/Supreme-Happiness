@@ -3,6 +3,7 @@ package edu.wwu.cs.ctrlf;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,11 +32,26 @@ public class MainActivity extends AppCompatActivity {
 
     private CameraSource cameraSource;
     private SurfaceView cameraArea;
+    private boolean running;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FloatingActionButton startStopButton = findViewById(R.id.start_stop_button);
+        startStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (running = !running) {
+                    ((FloatingActionButton) view).setImageDrawable(Resources.getSystem()
+                            .getDrawable(android.R.drawable.ic_media_pause, getTheme()));
+                } else {
+                    ((FloatingActionButton) view).setImageDrawable(Resources.getSystem()
+                            .getDrawable(android.R.drawable.ic_media_play, getTheme()));
+                }
+            }
+        });
 
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
         recognizer.setProcessor(new Processor());
@@ -81,20 +97,33 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void receiveDetections(Detector.Detections<TextBlock> detections) {
-            TextView text = findViewById(R.id.where_text_goes);
+            if (running) {
+                TextView text = findViewById(R.id.where_text_goes);
 
-            text.getEditableText();
-
-            SparseArray<TextBlock> blocks = detections.getDetectedItems();
-            for (int i = 0; i < blocks.size(); i++) {
-                TextBlock block = blocks.valueAt(i);
-                for (Text component : block.getComponents()) {
-                    Log.i("Text", component.getValue());
-                    text.append(component.getValue());
-                    text.append("\n");
+                SparseArray<TextBlock> blocks = detections.getDetectedItems();
+                for (int i = 0; i < blocks.size(); i++) {
+                    TextBlock block = blocks.valueAt(i);
+                    for (Text component : block.getComponents()) {
+                        runOnUiThread(new Appender(text, component));
+                    }
                 }
             }
+        }
 
+        private class Appender implements Runnable {
+            private final TextView text;
+            private final Text component;
+
+            public Appender(TextView text, Text component) {
+                this.text = text;
+                this.component = component;
+            }
+
+            @Override
+            public void run() {
+                text.append(component.getValue());
+                text.append("\n");
+            }
         }
     }
 }
