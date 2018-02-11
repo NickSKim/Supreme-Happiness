@@ -2,6 +2,7 @@ package edu.wwu.cs.ctrlf;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -12,10 +13,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.SparseArray;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -85,21 +88,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 callSearch(query);
+                View view = getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 //              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
-                callSearch(newText);
+                if (newText.length() > 3) {
+                    callSearch(newText);
+                }
 //              }
                 return true;
             }
 
             public void callSearch(String query) {
-                //Do searching
-                System.out.println("this was called");
 
+                TextView view = findViewById(R.id.where_text_goes);
+                String content = view.getText().toString()
+                        .replaceAll("(?i)(?:<font.*?>|</font>)", "")
+                        .replaceAll("(?i)" + query, "<font color=red>" + query + "</font>");
+                view.setText(Html.fromHtml(content));
             }
 
         });
@@ -161,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < blocks.size(); i++) {
                     TextBlock block = blocks.valueAt(i);
                     for (Text component : block.getComponents()) {
-
                         runOnUiThread(new Appender(text, component));
                     }
                 }
@@ -180,8 +192,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                text.append(component.getValue());
-                text.append("\n");
+                String s = component.getValue();
+                CharSequence query = ((SearchView) findViewById(R.id.search_bar)).getQuery();
+                if (s.contains(query)) {
+
+                }
+                text.append(Html.fromHtml(Html.escapeHtml(s)
+                        .replaceAll("(?i)(" + query + ")", "<font color=red>\1</font>") + "<br>"));
             }
         }
     }
