@@ -4,16 +4,15 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -47,6 +46,30 @@ public class MainActivity extends AppCompatActivity {
                             .getDrawable(android.R.drawable.ic_media_play, getTheme()));
                 }
             }
+        });
+
+        SearchView searchView = (SearchView) findViewById(R.id.search_bar);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+//              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
+                callSearch(newText);
+//              }
+                return true;
+            }
+
+            public void callSearch(String query) {
+                //Do searching
+                System.out.println("this was called");
+
+            }
+
         });
 
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
@@ -100,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < blocks.size(); i++) {
                     TextBlock block = blocks.valueAt(i);
                     for (Text component : block.getComponents()) {
+
                         runOnUiThread(new Appender(text, component));
                     }
                 }
