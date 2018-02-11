@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 String s = component.getValue();
                 CharSequence query = ((SearchView) findViewById(R.id.search_bar)).getQuery();
-                if (!TextUtils.isEmpty(query) && s.contains(query)) {
+                if (TextUtils.isEmpty(query) || s.contains(query)) {
                     if (!text.getText().toString().toLowerCase().replaceAll("[^a-zA-Z0-9 -]", "")
                             .contains(s.toLowerCase().replaceAll("[^a-zA-Z0-9 -]", ""))) {
                         text.append(Html.fromHtml(Html.escapeHtml(s)
