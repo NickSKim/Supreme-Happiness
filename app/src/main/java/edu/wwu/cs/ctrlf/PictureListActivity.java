@@ -1,10 +1,14 @@
 package edu.wwu.cs.ctrlf;
 
+import android.*;
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -28,6 +32,7 @@ import java.util.List;
  */
 public class PictureListActivity extends AppCompatActivity {
 
+    public static final int PERMISSION_STORAGE = 823;
     public static File rootFolder;
     /**
      * Random constant.
@@ -94,12 +99,12 @@ public class PictureListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                rootFolder = new File(Environment.getExternalStorageDirectory() + File.separator + "Pictures" + File.separator);
                 rootFolder.mkdirs();
-                File outputFile = new File(rootFolder, "IMG_" + System.currentTimeMillis() + ".jpg");
-                outputFileUri = Uri.fromFile(outputFile);
+                outputFileUri = Uri.fromFile(new File(rootFolder, "IMG_" + System.currentTimeMillis() + ".jpg"));
 
                 List<Intent> takeNewImageIntents = new ArrayList<>();
-                Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 for (ResolveInfo res : getPackageManager().queryIntentActivities(captureIntent, 0)) {
                     String packageName = res.activityInfo.packageName;
@@ -126,10 +131,20 @@ public class PictureListActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PICTURE && resultCode == RESULT_OK) {
 
-            Uri realUri = data.getData();
+            Uri realUri;
+            if (data == null || data.getData() == null) {
+                realUri = outputFileUri;
+            } else {
+                realUri = data.getData();
+            }
 
+            outputFileUri = realUri;
+
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
+            }
             Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
-            showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, realUri);
+            showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, outputFileUri);
 
             ArrayList<CreateList> createLists = prepareData();
             MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
@@ -137,6 +152,19 @@ public class PictureListActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
 
             startActivity(showPictureIntent);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
+                showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, outputFileUri);
+                startActivity(showPictureIntent);
+            }
         }
     }
 
