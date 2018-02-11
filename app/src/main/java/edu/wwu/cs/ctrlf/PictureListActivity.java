@@ -169,7 +169,9 @@ public class PictureListActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("outputFileUri", outputFileUri.toString());
+        if (outputFileUri != null) {
+            outState.putString("outputFileUri", outputFileUri.toString());
+        }
         super.onSaveInstanceState(outState);
     }
 
