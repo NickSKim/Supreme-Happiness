@@ -44,6 +44,7 @@ public class PictureListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private Uri outputFileUri;
+    private ArrayList<CreateList> theimage = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +58,8 @@ public class PictureListActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),3);
         recyclerView.setLayoutManager(layoutManager);
-        ArrayList<CreateList> createLists = prepareData();
-        MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
+        prepareData();
+        MyAdapter adapter = new MyAdapter(getApplicationContext(), theimage);
         recyclerView.setAdapter(adapter); //end
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,11 +79,10 @@ public class PictureListActivity extends AppCompatActivity {
     }
 
     // gallery url list
-    private ArrayList<CreateList> prepareData(){
-        ArrayList<CreateList> theimage = new ArrayList<>();
+    private void prepareData(){
         File file[] = rootFolder.listFiles();
         if (file==null) {
-            return theimage;
+            return;
         }
         for (int i=0; i < file.length; i++)
         {
@@ -90,7 +90,6 @@ public class PictureListActivity extends AppCompatActivity {
             createList.setImage_ID("file:///~" + file[i].toString());
             theimage.add(createList);
         }
-        return theimage;
     }
 
     @NonNull
@@ -146,8 +145,8 @@ public class PictureListActivity extends AppCompatActivity {
             Intent showPictureIntent = new Intent(getApplicationContext(), ShowPictureActivity.class);
             showPictureIntent.putExtra(ShowPictureActivity.PICTURE_URI, outputFileUri);
 
-            ArrayList<CreateList> createLists = prepareData();
-            MyAdapter adapter = new MyAdapter(getApplicationContext(), createLists);
+            prepareData();
+            MyAdapter adapter = new MyAdapter(getApplicationContext(), theimage);
             RecyclerView recyclerView = (RecyclerView)findViewById(R.id.picture_list);
             recyclerView.setAdapter(adapter);
 
